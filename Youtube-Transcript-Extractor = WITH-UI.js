@@ -1,18 +1,15 @@
-// ============= WORK 11.dec.25 Web Desctop =============
-// ============= Функция для запуска выкачки транскрипта =============
+// ============= WORK YT Transcript Extractor v8 =============
 
 // Ютуб блокирует внедрение классов - все только на функциях.
-// При нажатиин а СС - всегда происходит ловля даже если сабы уже были включены раньше
+// При нажатии на СС - всегда происходит ловля даже если сабы уже были включены раньше
 // Кастом язык - выбирается в настройках видео и тоже перехватит.
-// Позже будет версия с интерфейсом
 
-// Создано для ручного парсинга длинных видео для дальшейшего обучения нейронок на них.
-// Вставил лекцию по ХХХ на 3 чата = нейронка уже разбирается и шарит. Но тут расчет на десятки часов узкопрофильной инфы.
+// Создано для ручного парсинга длинных видео для дальнейшего обучения нейронок на них.
 
-// v7.6
+// v8.0
 // ===================== ОСНОВНАЯ ИНИЦИАЛИЗАЦИЯ =====================
 (function() {
-    console.log('[YT Transcript Extractor] Инициализация v7.6...');
+    console.log('[YT Transcript Extractor] Инициализация v8.0...');
     
     // Удаляем ВСЕ старые UI элементы
     const oldUIs = document.querySelectorAll('#youtube-transcript-ui, [id^="youtube-transcript-ui"]');
@@ -111,32 +108,13 @@ function formatDuration(seconds) {
 }
 
 function createUI() {
-    console.log('[YT Transcript Extractor] Создание UI v7.6...');
+    console.log('[YT Transcript Extractor] Создание UI v8.0...');
     
     // Уменьшенный и адаптивный интерфейс
     const uiContainer = createSafeElement('div', {
         id: 'youtube-transcript-ui',
         style: {
-            position: 'fixed',
-            top: '20px',
-            right: '20px',
-            width: '520px', // Уменьшено с 540px
-            height: '380px', // Уменьшено с 400px
-            minWidth: '450px',
-            minHeight: '320px',
-            maxWidth: '800px',
-            maxHeight: '600px',
-            background: '#1a1a1a',
-            border: '1px solid #333',
-            borderRadius: '8px',
-            boxShadow: '0 4px 20px rgba(0,0,0,0.5)',
-            zIndex: '10000',
-            fontFamily: "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
-            color: '#e0e0e0',
-            display: 'flex',
-            flexDirection: 'column',
-            overflow: 'hidden',
-            resize: 'both'
+            position: 'fixed',  top: '20px',  right: '20px',  width: '520px',  height: '380px',  minWidth: '450px',  minHeight: '280px',  background: '#1a1a1a',  border: '1px solid #333',  borderRadius: '8px',  boxShadow: '0 4px 20px rgba(0,0,0,0.5)',  zIndex: '10000',  fontFamily: "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",  color: '#e0e0e0',  display: 'flex',  flexDirection: 'column',  overflow: 'hidden',  resize: 'both'
         }
     });
     
@@ -144,68 +122,29 @@ function createUI() {
     const header = createSafeElement('div', {
         class: 'ytt-header',
         style: {
-            background: '#252525',
-            padding: '10px 14px', // Уменьшен padding
-            borderBottom: '1px solid #333',
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            cursor: 'move',
-            userSelect: 'none',
-            flexShrink: '0'
+            background: '#252525',  padding: '10px 14px',  borderBottom: '1px solid #333',  display: 'flex',  justifyContent: 'space-between',  alignItems: 'center',  cursor: 'move',  userSelect: 'none',  flexShrink: '0'
         }
     });
     
     const headerText = createSafeElement('div', {
         class: 'ytt-drag-handle',
         style: { 
-            fontWeight: '600', 
-            fontSize: '13px', // Уменьшен шрифт
-            color: '#fff',
-            whiteSpace: 'nowrap'
+            fontWeight: '600',  fontSize: '13px',  color: '#fff',  whiteSpace: 'nowrap'
         }
-    }, ['🎯 YT Transcript Extractor v7.6']);
+    }, ['🎯 YT Transcript Extractor v8.0']);
     
     const controls = createSafeElement('div', { 
         class: 'ytt-controls', 
         style: { 
-            display: 'flex', 
-            gap: '3px' // Уменьшен gap
+            display: 'flex',  gap: '3px'
         } 
     });
     
-    const minimizeBtn = createSafeElement('button', {
-        id: 'ytt-minimize',
-        style: {
-            background: 'none', 
-            border: 'none', 
-            color: '#aaa', 
-            cursor: 'pointer',
-            fontSize: '16px', // Уменьшен шрифт
-            width: '22px', 
-            height: '22px', 
-            borderRadius: '3px',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center'
-        },
-        onclick: () => uiContainer.classList.toggle('ytt-minimized')
-    }, ['−']);
-    
+    // Убрана кнопка сворачивания, оставляем только закрытие
     const closeBtn = createSafeElement('button', {
         id: 'ytt-close',
         style: {
-            background: 'none', 
-            border: 'none', 
-            color: '#aaa', 
-            cursor: 'pointer',
-            fontSize: '16px', 
-            width: '22px', 
-            height: '22px', 
-            borderRadius: '3px',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center'
+            background: 'none',  border: 'none',  color: '#aaa',  cursor: 'pointer',  fontSize: '16px',  width: '22px',  height: '22px',  borderRadius: '3px',  display: 'flex',  alignItems: 'center',  justifyContent: 'center'
         },
         onclick: () => {
             uiContainer.remove();
@@ -213,7 +152,6 @@ function createUI() {
         }
     }, ['×']);
     
-    controls.appendChild(minimizeBtn);
     controls.appendChild(closeBtn);
     header.appendChild(headerText);
     header.appendChild(controls);
@@ -222,83 +160,51 @@ function createUI() {
     const body = createSafeElement('div', {
         class: 'ytt-body',
         style: {
-            flex: '1',
-            padding: '12px 14px', // Уменьшен padding
-            display: 'flex',
-            flexDirection: 'column',
-            overflow: 'hidden',
-            minHeight: '0' // Важно для корректного сжатия
+            flex: '1',  padding: '12px 14px',  display: 'flex',  flexDirection: 'column',  overflow: 'hidden',  minHeight: '0'
         }
     });
     
-    // Status section
+    // Status section с кнопками в одной строке
     const statusSection = createSafeElement('div', {
         style: { 
-            marginBottom: '12px', // Уменьшен margin
-            flexShrink: '0'
+            marginBottom: '12px',  flexShrink: '0',  display: 'flex',  alignItems: 'center',  justifyContent: 'space-between',  gap: '10px'
         }
     });
     
-    const status = createSafeElement('div', {
+    const statusContainer = createSafeElement('div', {
         style: { 
-            display: 'flex', 
-            alignItems: 'center', 
-            gap: '6px', // Уменьшен gap
-            marginBottom: '6px', 
-            fontSize: '13px' // Уменьшен шрифт
+            display: 'flex',  alignItems: 'center',  gap: '6px',  fontSize: '13px'
         }
     });
     
-    status.appendChild(createSafeElement('span', {}, ['Статус:']));
+    statusContainer.appendChild(createSafeElement('span', {}, ['Статус:']));
     const statusText = createSafeElement('span', {
         id: 'ytt-status-text',
         style: { 
-            color: '#f44336', 
-            fontWeight: '600',
-            fontSize: '12px'
+            color: '#f44336',  fontWeight: '600',  fontSize: '12px'
         }
     }, ['⏸️ Остановлен']);
-    status.appendChild(statusText);
+    statusContainer.appendChild(statusText);
     
     // Buttons
     const buttons = createSafeElement('div', {
         style: { 
-            display: 'flex', 
-            gap: '6px' // Уменьшен gap
+            display: 'flex',  gap: '6px',  flexShrink: '0'
         }
     });
     
     const startBtn = createSafeElement('button', {
         id: 'ytt-start-btn',
         style: {
-            background: '#2196F3', 
-            color: 'white', 
-            padding: '6px 12px', // Уменьшен padding
-            border: 'none',
-            borderRadius: '4px', 
-            cursor: 'pointer', 
-            fontSize: '12px', // Уменьшен шрифт
-            fontWeight: '500', 
-            flex: '1',
-            whiteSpace: 'nowrap'
+            background: '#2196F3',  color: 'white',  padding: '6px 12px',  border: 'none',  borderRadius: '4px',  cursor: 'pointer',  fontSize: '12px',  fontWeight: '500',  whiteSpace: 'nowrap'
         },
         onclick: startTranscriptExtractor
-    }, ['▶️ Запуск перехвата']);
+    }, ['▶️ Запуск']);
     
     const stopBtn = createSafeElement('button', {
         id: 'ytt-stop-btn',
         style: {
-            background: '#555', 
-            color: 'white', 
-            padding: '6px 12px',
-            border: 'none',
-            borderRadius: '4px', 
-            cursor: 'not-allowed', 
-            fontSize: '12px',
-            fontWeight: '500', 
-            flex: '1', 
-            opacity: '0.5',
-            whiteSpace: 'nowrap'
+            background: '#555',  color: 'white',  padding: '6px 12px',  border: 'none',  borderRadius: '4px',  cursor: 'not-allowed',  fontSize: '12px',  fontWeight: '500',  opacity: '0.5',  whiteSpace: 'nowrap'
         },
         disabled: true,
         onclick: stopTranscriptExtractor
@@ -307,60 +213,30 @@ function createUI() {
     buttons.appendChild(startBtn);
     buttons.appendChild(stopBtn);
     
-    // Info
-    const info = createSafeElement('div', {
-        style: { 
-            fontSize: '11px', // Уменьшен шрифт
-            color: '#aaa', 
-            marginBottom: '10px',
-            flexShrink: '0'
-        }
-    }, ['Инструкция: включите субтитры (CC) на видео']);
-    
-    statusSection.appendChild(status);
+    statusSection.appendChild(statusContainer);
     statusSection.appendChild(buttons);
-    statusSection.appendChild(info);
     
-    // Table container - ГИБКАЯ ВЫСОТА
+    // Table container
     const tableContainer = createSafeElement('div', {
         id: 'ytt-table-container',
         style: {
-            flex: '1 1 auto', // Гибкий размер
-            overflow: 'hidden',
-            display: 'flex',
-            flexDirection: 'column',
-            border: '1px solid #333',
-            borderRadius: '4px',
-            minHeight: '100px' // Минимальная высота
+            flex: '1 1 auto',  overflow: 'hidden',  display: 'flex',  flexDirection: 'column',  border: '1px solid #333',  borderRadius: '4px',  minHeight: '100px'
         }
     });
     
-    // ОБНОВЛЕННЫЕ КОЛОНКИ ТАБЛИЦЫ
+    // ОБНОВЛЕННЫЕ КОЛОНКИ ТАБЛИЦЫ (адаптивная ширина)
     const tableHeader = createSafeElement('div', {
         style: {
-            background: '#252525',
-            padding: '6px 10px', // Уменьшен padding
-            borderBottom: '1px solid #333',
-            fontSize: '11px', // Уменьшен шрифт
-            fontWeight: '600',
-            display: 'grid',
-            // НОВЫЕ КОЛОНКИ: Тип, Канал, Длит.видео, Название, Симв., Слов, Время, Действия
-            gridTemplateColumns: '14% 12% 10% 18% 8% 8% 12% 18%',
-            gap: '4px', // Уменьшен gap
-            alignItems: 'center',
-            textAlign: 'center', // Центрирование
-            flexShrink: '0'
+            background: '#252525',  padding: '6px 10px',  borderBottom: '1px solid #333',  fontSize: '11px',  fontWeight: '600',  display: 'grid',  // Адаптивные колонки: Тип, Канал, Длит., Название, Симв./Слов, Время, Действия
+            gridTemplateColumns: 'minmax(70px, auto) minmax(80px, auto) minmax(50px, auto) minmax(100px, 1fr) minmax(60px, auto) minmax(70px, auto) minmax(120px, auto)',  gap: '4px',  alignItems: 'center',  textAlign: 'center',  flexShrink: '0'
         }
     });
     
-    // Заголовки с центрированием
-    ['Тип', 'Канал', 'Длит.', 'Название', 'Симв.', 'Слов', 'Время', 'Действия'].forEach(text => {
+    // Заголовки
+    ['Тип', 'Канал', 'Длит.', 'Название', 'Симв./Слов', 'Время', 'Действия'].forEach(text => {
         const headerCell = createSafeElement('div', {
             style: {
-                textAlign: 'center',
-                overflow: 'hidden',
-                textOverflow: 'ellipsis',
-                whiteSpace: 'nowrap'
+                textAlign: 'center',  overflow: 'hidden',  textOverflow: 'ellipsis',  whiteSpace: 'nowrap'
             }
         }, [text]);
         tableHeader.appendChild(headerCell);
@@ -369,24 +245,13 @@ function createUI() {
     const tableBody = createSafeElement('div', {
         id: 'ytt-table-body',
         style: {
-            flex: '1 1 auto', // Гибкий размер
-            overflowY: 'auto',
-            overflowX: 'hidden',
-            minHeight: '40px'
+            flex: '1 1 auto',  overflowY: 'auto',  overflowX: 'hidden',  minHeight: '40px'
         }
     });
     
     const emptyMessage = createSafeElement('div', {
         style: {
-            padding: '15px', // Уменьшен padding
-            textAlign: 'center',
-            color: '#888',
-            fontStyle: 'italic',
-            fontSize: '12px', // Уменьшен шрифт
-            height: '100%',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center'
+            padding: '15px',  textAlign: 'center',  color: '#888',  fontStyle: 'italic',  fontSize: '12px',  height: '100%',  display: 'flex',  alignItems: 'center',  justifyContent: 'center'
         }
     }, ['Нет перехваченных субтитров']);
     
@@ -415,6 +280,14 @@ if (!window._subtitlesStore) {
         
         add(transcriptData, metadata, url) {
             console.log('[Store] Добавление субтитров...');
+            
+            // ЗАЩИТА ОТ ДУБЛИРОВАНИЯ: проверяем по URL
+            const existingIndex = this.items.findIndex(item => item.url === url);
+            if (existingIndex !== -1) {
+                console.log('[Store] Дубликат найден, пропускаем');
+                this.notify('⚠️ Дубликат субтитров пропущен');
+                return this.items[existingIndex];
+            }
             
             const urlObj = new URL(url);
             const kind = urlObj.searchParams.get('kind') || 'unknown';
@@ -491,58 +364,37 @@ if (!window._subtitlesStore) {
             if (this.items.length === 0) {
                 tableBody.appendChild(createSafeElement('div', {
                     style: {
-                        padding: '15px',
-                        textAlign: 'center',
-                        color: '#888',
-                        fontStyle: 'italic',
-                        fontSize: '12px',
-                        height: '100%',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center'
+                        padding: '15px',  textAlign: 'center',  color: '#888',  fontStyle: 'italic',  fontSize: '12px',  height: '100%',  display: 'flex',  alignItems: 'center',  justifyContent: 'center'
                     }
                 }, ['Нет перехваченных субтитров']));
                 return;
             }
             
             this.items.forEach(item => {
-                // СООТВЕТСТВУЕТ НОВОЙ СТРУКТУРЕ КОЛОНОК
+                // АДАПТИВНЫЕ КОЛОНКИ
                 const row = createSafeElement('div', {
                     style: {
-                        display: 'grid',
-                        gridTemplateColumns: '14% 12% 10% 18% 8% 8% 12% 18%',
-                        gap: '4px',
-                        padding: '6px 10px',
-                        borderBottom: '1px solid #2a2a2a',
-                        fontSize: '11px',
-                        alignItems: 'center',
-                        textAlign: 'center' // ЦЕНТРИРОВАНИЕ
+                        display: 'grid',  gridTemplateColumns: 'minmax(70px, auto) minmax(80px, auto) minmax(50px, auto) minmax(100px, 1fr) minmax(60px, auto) minmax(70px, auto) minmax(120px, auto)',  gap: '4px',  padding: '6px 10px',  borderBottom: '1px solid #2a2a2a',  fontSize: '11px',  alignItems: 'center',  textAlign: 'center'
                     }
                 });
                 
-                // 1. Тип (язык + авто/ручные) - БЕЗ ДАТЫ ПЕРЕХВАТА
+                // 1. Тип (язык + авто/ручные)
                 const typeCell = createSafeElement('div');
                 typeCell.appendChild(createSafeElement('div', {
                     style: { 
-                        fontWeight: '500', 
-                        marginBottom: '1px',
-                        fontSize: '10px'
+                        fontWeight: '500',  marginBottom: '1px',  fontSize: '10px'
                     }
                 }, [this.getLanguageName(item.lang)]));
                 typeCell.appendChild(createSafeElement('div', {
                     style: { 
-                        fontSize: '9px', 
-                        color: item.kindName === 'Авто' ? '#4CAF50' : '#FF9800'
+                        fontSize: '9px',  color: item.kindName === 'Авто' ? '#4CAF50' : '#FF9800'
                     }
                 }, [item.kindName]));
                 
                 // 2. Канал (сокращенный)
                 const channelCell = createSafeElement('div', {
                     style: {
-                        overflow: 'hidden',
-                        textOverflow: 'ellipsis',
-                        whiteSpace: 'nowrap',
-                        fontSize: '10px'
+                        overflow: 'hidden',  textOverflow: 'ellipsis',  whiteSpace: 'nowrap',  fontSize: '10px'
                     },
                     title: item.metadata.channelName || 'Unknown'
                 }, [item.shortChannel]);
@@ -555,25 +407,17 @@ if (!window._subtitlesStore) {
                 // 4. Начало названия
                 const titleCell = createSafeElement('div', {
                     style: {
-                        overflow: 'hidden',
-                        textOverflow: 'ellipsis',
-                        whiteSpace: 'nowrap',
-                        fontSize: '10px'
+                        overflow: 'hidden',  textOverflow: 'ellipsis',  whiteSpace: 'nowrap',  fontSize: '10px'
                     },
                     title: item.metadata.videoTitle || 'Unknown'
                 }, [item.titleStart]);
                 
-                // 5. Символы
-                const charsCell = createSafeElement('div', {
+                // 5. Символы/Слова (объединенная колонка)
+                const charsWordsCell = createSafeElement('div', {
                     style: { fontSize: '10px' }
-                }, [item.transcript.text.length.toLocaleString()]);
+                }, [`${item.transcript.text.length.toLocaleString()}/${item.wordCount.toLocaleString()}`]);
                 
-                // 6. Слова
-                const wordsCell = createSafeElement('div', {
-                    style: { fontSize: '10px' }
-                }, [item.wordCount.toLocaleString()]);
-                
-                // 7. Время (диапазон субтитров)
+                // 6. Время (диапазон субтитров)
                 const timeCell = createSafeElement('div', {
                     style: { fontSize: '10px' }
                 }, [
@@ -582,13 +426,10 @@ if (!window._subtitlesStore) {
                     '?'
                 ]);
                 
-                // 8. Действия (с новой кнопкой предпросмотра)
+                // 7. Действия
                 const actionsCell = createSafeElement('div', {
                     style: { 
-                        display: 'flex', 
-                        gap: '3px', 
-                        flexWrap: 'nowrap',
-                        justifyContent: 'center'
+                        display: 'flex',  gap: '3px',  flexWrap: 'nowrap',  justifyContent: 'center'
                     }
                 });
                 
@@ -603,16 +444,7 @@ if (!window._subtitlesStore) {
                 actions.forEach(btn => {
                     const button = createSafeElement('button', {
                         style: {
-                            background: '#555', 
-                            color: 'white', 
-                            border: 'none',
-                            borderRadius: '3px', 
-                            cursor: 'pointer', 
-                            padding: '3px 6px',
-                            fontSize: '10px',
-                            whiteSpace: 'nowrap',
-                            flexShrink: '0',
-                            minWidth: '24px'
+                            background: '#555',  color: 'white',  border: 'none',  borderRadius: '3px',  cursor: 'pointer',  padding: '3px 6px',  fontSize: '10px',  whiteSpace: 'nowrap',  flexShrink: '0',  minWidth: '24px'
                         },
                         title: btn.title,
                         onclick: btn.action
@@ -625,8 +457,7 @@ if (!window._subtitlesStore) {
                 row.appendChild(channelCell);
                 row.appendChild(durationCell);
                 row.appendChild(titleCell);
-                row.appendChild(charsCell);
-                row.appendChild(wordsCell);
+                row.appendChild(charsWordsCell);
                 row.appendChild(timeCell);
                 row.appendChild(actionsCell);
                 
@@ -634,7 +465,6 @@ if (!window._subtitlesStore) {
             });
         },
         
-        // НОВЫЙ МЕТОД: ПРЕДПРОСМОТР
         preview(id) {
             const item = this.getItem(id);
             if (!item) return;
@@ -660,55 +490,13 @@ if (!window._subtitlesStore) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>${item.metadata.videoTitle || 'Транскрипт'} - Предпросмотр</title>
     <style>
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            line-height: 1.6;
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 20px;
-            color: #333;
-            background: #f5f5f5;
-        }
-        .header {
-            background: white;
-            padding: 20px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-        .header h1 {
-            margin: 0 0 10px 0;
-            color: #333;
-            font-size: 18px;
-        }
-        .meta {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 10px;
-            font-size: 14px;
-            color: #666;
-        }
-        .meta div {
-            padding: 5px 0;
-        }
-        .transcript {
-            background: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            white-space: pre-wrap;
-            font-size: 15px;
-            line-height: 1.8;
-        }
-        .type-badge {
-            display: inline-block;
-            padding: 2px 8px;
-            background: ${item.kindName === 'Авто' ? '#4CAF50' : '#FF9800'};
-            color: white;
-            border-radius: 12px;
-            font-size: 12px;
-            margin-left: 10px;
-        }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.6; max-width: 800px; margin: 0 auto; padding: 20px; color: #333; background: #f5f5f5; }
+        .header { background: white; padding: 20px; border-radius: 8px; margin-bottom: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .header h1 { margin: 0 0 10px 0; color: #333; font-size: 18px; }
+        .meta { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; font-size: 14px; color: #666; }
+        .meta div { padding: 5px 0; }
+        .transcript { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); white-space: pre-wrap; font-size: 15px; line-height: 1.8; }
+        .type-badge { display: inline-block; padding: 2px 8px; background: ${item.kindName === 'Авто' ? '#4CAF50' : '#FF9800'}; color: white; border-radius: 12px; font-size: 12px; margin-left: 10px; }
     </style>
 </head>
 <body>
@@ -784,7 +572,6 @@ if (!window._subtitlesStore) {
             this.notify('💾 Файл скачан');
         },
         
-        // ИСПРАВЛЕННОЕ ИМЯ ФАЙЛА
         generateFileName(item) {
             // 1. Канал
             const cleanChannel = (item.metadata.channelName || 'Unknown')
@@ -793,15 +580,13 @@ if (!window._subtitlesStore) {
                 .trim()
                 .replace(/\s+/g, '_');
             
-            // 2. Дата из метаданных (не дата перехвата)
+            // 2. Дата из метаданных
             let cleanDate = 'nodate';
             if (item.metadata.uploadDate) {
-                // Пытаемся извлечь дату из строки
                 const dateMatch = item.metadata.uploadDate.match(/\d{4}[-/]\d{1,2}[-/]\d{1,2}/);
                 if (dateMatch) {
                     cleanDate = dateMatch[0].replace(/[/]/g, '-');
                 } else {
-                    // Если не нашли дату, используем текущую
                     const now = new Date();
                     cleanDate = `${now.getFullYear()}-${(now.getMonth()+1).toString().padStart(2, '0')}-${now.getDate().toString().padStart(2, '0')}`;
                 }
@@ -810,7 +595,7 @@ if (!window._subtitlesStore) {
             // 3. ID видео
             const videoId = item.metadata.videoId || 'noid';
             
-            // 4. ОБЩАЯ ДЛИТЕЛЬНОСТЬ ВИДЕО (вместо диапазона субтитров)
+            // 4. Длительность видео
             const duration = item.videoDuration.replace(/:/g, '-');
             
             // 5. Количество слов
@@ -852,16 +637,7 @@ if (!window._subtitlesStore) {
             console.log(`[Store] ${message}`);
             const note = createSafeElement('div', {
                 style: {
-                    position: 'fixed', 
-                    bottom: '20px', 
-                    right: '20px',
-                    background: '#333', 
-                    color: 'white', 
-                    padding: '10px 16px',
-                    borderRadius: '4px', 
-                    zIndex: '10001', 
-                    fontSize: '13px',
-                    animation: 'fadeIn 0.3s'
+                    position: 'fixed',  bottom: '20px',  right: '20px',  background: '#333',  color: 'white',  padding: '10px 16px',  borderRadius: '4px',  zIndex: '10001',  fontSize: '13px',  animation: 'fadeIn 0.3s'
                 }
             }, [message]);
             
@@ -877,7 +653,7 @@ if (!window._subtitlesStore) {
 
 const subtitlesStore = window._subtitlesStore;
 
-// ===================== ПЕРЕХВАТЧИК (БЕЗ ИЗМЕНЕНИЙ) =====================
+// ===================== ПЕРЕХВАТЧИК =====================
 function extractTranscriptWithTimestamps(data) {
     if (!data || !data.events) return { text: '', startTime: null, endTime: null };
     
@@ -1052,8 +828,9 @@ function setupDragAndResize(container) {
             container.style.top = Math.max(0, Math.min(startT + e.clientY - startY, window.innerHeight - container.offsetHeight)) + 'px';
         }
         if (resizing) {
-            const newWidth = Math.max(450, Math.min(800, startW + e.clientX - startX));
-            const newHeight = Math.max(320, Math.min(600, startH + e.clientY - startY));
+            // Убрано ограничение по ширине (было max 800px)
+            const newWidth = Math.max(450, startW + e.clientX - startX);
+            const newHeight = Math.max(280, startH + e.clientY - startY);
             
             container.style.width = newWidth + 'px';
             container.style.height = newHeight + 'px';
@@ -1126,7 +903,7 @@ window.stopTranscriptExtractor = function() {
 
 // ===================== АВТОЗАПУСК =====================
 (function init() {
-    console.log('[YT Transcript Extractor] Загрузка v7.6...');
+    console.log('[YT Transcript Extractor] Загрузка v8.0...');
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', createUI);
     } else {
